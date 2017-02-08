@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Android Student Manager</string>
+    <string name="first_name">First name: </string>
+    <string name="last_name">Last Name: </string>
+    <string name="age">Age: </string>
+    <string name="ready">Check</string>
+    <string name="return_button">Return</string>
+    <string name="second_activity_start_button">Go!</string>
+    <string name="enter_name_hint">enter name</string>
+    <string name="enter_age_hint">enter age</string>
+</resources>
