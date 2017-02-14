@@ -1,0 +1,2 @@
+teacher;25;info
+el;26;istorie

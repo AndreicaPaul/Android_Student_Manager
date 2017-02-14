@@ -5,7 +5,8 @@
     <string name="age">Age: </string>
     <string name="ready">Check</string>
     <string name="return_button">Return</string>
-    <string name="second_activity_start_button">Go!</string>
+    <string name="second_activity_start_button">Save</string>
     <string name="enter_name_hint">enter name</string>
     <string name="enter_age_hint">enter age</string>
+    <string name="hello_message">Hello!</string>
 </resources>
