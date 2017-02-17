@@ -27,7 +27,7 @@ public class Student implements FileSavingObject { //Use own superclass
 
     @Override
     public String toString() {
-        return this.firstName + " " + this.lastName + " " + this.getAge();
+        return "First name: " + this.firstName + "  " + "Age: " + this.getAge() + "\n" + "Last name: " + this.lastName;
     }
 
     @Override

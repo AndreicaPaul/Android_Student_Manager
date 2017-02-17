@@ -16,8 +16,8 @@ import com.example.paul.androidstudentmanager.view.DisplayStudentsActivity;
 public class MainActivity extends AppCompatActivity {
 
     private EditText editTextFirstName,editTextLastName,editTextAge;
-    Repository repository = new Repository();
-    Controller controller = new Controller(repository);
+    Controller controller = new Controller(Repository.getInstance());
+    public static final String EXTRA_MESSAGE = "mesage";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

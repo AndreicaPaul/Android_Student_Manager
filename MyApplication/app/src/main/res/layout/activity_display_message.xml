@@ -10,11 +10,30 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.paul.androidstudentmanager.view.DisplayStudentsActivity">
 
+    <!--<TextView-->
+        <!--android:layout_width="110dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:text="First name"-->
+        <!--android:textSize="20sp"-->
+        <!--android:id="@+id/first_name_header"/>-->
+    <!--<TextView-->
+        <!--android:layout_width="110dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:textSize="20sp"-->
+        <!--android:layout_toRightOf="@+id/first_name_header"-->
+        <!--android:text="Last name"-->
+        <!--android:id="@+id/last_name_header"/>-->
+    <!--<TextView-->
+        <!--android:layout_width="110dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:textSize="20sp"-->
+        <!--android:text="Age"-->
+        <!--android:layout_toRightOf="@+id/last_name_header"/>-->
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/students_list" />
-
+        android:id="@+id/students_list"/>
+        <!--android:layout_below="@+id/first_name_header"/>-->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

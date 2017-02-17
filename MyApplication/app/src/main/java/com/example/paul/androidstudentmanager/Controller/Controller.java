@@ -7,8 +7,7 @@ import com.example.paul.androidstudentmanager.model.Teacher;
 import com.example.paul.androidstudentmanager.repository.Repository;
 
 import java.util.ArrayList;
-public class Controller
-{
+public class Controller {
     private Repository repository;
 
     public Controller(Repository repository) {

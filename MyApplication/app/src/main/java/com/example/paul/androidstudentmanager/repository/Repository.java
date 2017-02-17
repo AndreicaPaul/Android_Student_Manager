@@ -7,17 +7,29 @@ import com.example.paul.androidstudentmanager.model.Teacher;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
 public class Repository {
     private ArrayList<Student> students = new ArrayList<>();
     private ArrayList<Discipline> disciplines = new ArrayList<>();
     private ArrayList<Grade> grades = new ArrayList<>();
     private ArrayList<Teacher> teachers = new ArrayList<>();
-//    public Repository (){
+    //Singleton
+    private static Repository instance = null;
+    protected Repository() {
+        // Exists only to defeat instantiation.
 //        this.loadStudentsFromFile();
 //        this.loadDisciplinesFromFile();
 //        this.loadTeachersFromFile();
 //        this.loadGradesFromFile();
-//    }
+    }
+    public static Repository getInstance() {
+        if(instance == null) {
+            instance = new Repository();
+        }
+        return instance;
+    }
+
+
 //
 //    //General writer
 //    private void saveObjectsInFile(ArrayList<? extends FileSavingObject> objects, String fileName) throws Exception {
