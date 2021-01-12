@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="grades_type">
+        <item>Test</item>
+        <item>Ascultare</item>
+        <item>Teza</item>
+        <item>Activitate</item>
+        <item>Proiect</item>
+    </string-array>
+</resources>

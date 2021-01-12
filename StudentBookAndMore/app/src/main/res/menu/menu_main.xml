@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.paul.studentbookandmore.ui.AndroidWithSwipeView">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="1"
+        android:title="@string/action_settings"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/add_discipline"
+        android:orderInCategory="2"
+        android:title="@string/add_discipline_menu_item"
+        android:onClick="addDiscipline"
+        />
+    <item android:id="@+id/remove_discipline"
+        android:orderInCategory="4"
+        android:title="Șterge o disciplină"
+        android:onClick="deleteDiscipline"
+        />
+    <item android:id="@+id/add_teza"
+        android:orderInCategory="3"
+        android:title="Adaugă o teză"
+        android:onClick="addTeza"
+        />
+
+</menu>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Carnet de Elev</string>
+    <string name="example_maths">exemplu: Matematică</string>
+    <string name="name_indicator_in_add_discipline_screen">Nume:</string>
+    <string name="save">Salvare</string>
+    <string name="sort_by_date_button">Sortare după dată</string>
+    <string name="sort_by_discipline_button">Sortare după disciplină</string>
+    <string name="sort_by_grade_button">Sortare după notă</string>
+    <string name="title_activity_discipline_detail">Detalii Disciplină</string>
+    <string name="title_activity_discipline_details">Detalii Disciplină</string>
+    <string name="title_dashboard">Discipline</string>
+    <string name="title_notifications">Note</string>
+    <string name="title_home">Acum</string>
+    <string name="now">Acum</string>
+    <string name="delete">Șterege</string>
+    <string name="delete_discipline_part_I">Șterge disciplina</string>
+    <string name="delete_discipline_part_II">Sunteți sigur că vreți să ștergeți această disciplină</string>
+    <string name="add_discipline_menu_item">Adaugă o disciplină</string>
+</resources>

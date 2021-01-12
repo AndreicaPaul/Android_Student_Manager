@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/StudentBookAndMore.iml" filepath="$PROJECT_DIR$/StudentBookAndMore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/StudentBookAndMore.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/StudentBookAndMore.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/folding-cell/StudentBookAndMore.folding-cell.iml" filepath="$PROJECT_DIR$/.idea/modules/folding-cell/StudentBookAndMore.folding-cell.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
