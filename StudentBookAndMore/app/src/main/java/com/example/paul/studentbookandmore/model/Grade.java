@@ -1,12 +1,30 @@
 package com.example.paul.studentbookandmore.model;
 
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
+
+@Entity(foreignKeys = @ForeignKey(entity = Discipline.class,
+parentColumns = "id",
+childColumns = "correspondingDisciplineID",
+onDelete = ForeignKey.CASCADE))
 public class Grade {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private int gradeValue;
-    private Discipline correspondingDiscipline;
+    private int correspondingDisciplineID;
     private boolean isThesis;
 
     public Grade() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isThesis() {
@@ -19,16 +37,16 @@ public class Grade {
 
     public Grade(int gradeValue, Discipline discipline, boolean isThesis) {
         this.gradeValue = gradeValue;
-        this.correspondingDiscipline = discipline;
+        this.correspondingDisciplineID = discipline.getId();
         this.isThesis = isThesis;
     }
 
-    public Discipline getCorrespondingDiscipline() {
-        return correspondingDiscipline;
+    public int getCorrespondingDisciplineID() {
+        return correspondingDisciplineID;
     }
 
-    public void setCorrespondingDiscipline(Discipline correspondingDiscipline) {
-        this.correspondingDiscipline = correspondingDiscipline;
+    public void setCorrespondingDisciplineID(int correspondingDisciplineID) {
+        this.correspondingDisciplineID = correspondingDisciplineID;
     }
 
     public int getGradeValue() {
@@ -40,7 +58,7 @@ public class Grade {
     }
 
     public String toFileSave(){
-        return gradeValue + ";" + correspondingDiscipline + ";" + isThesis + '\n';
+        return gradeValue + ";" + correspondingDisciplineID + ";" + isThesis + '\n';
     }
 
     @Override
@@ -51,7 +69,7 @@ public class Grade {
         Grade grade = (Grade) o;
 
         if (Float.compare(grade.gradeValue, gradeValue) != 0) return false;
-        return correspondingDiscipline.equals(grade.correspondingDiscipline);
+        return correspondingDisciplineID == grade.correspondingDisciplineID;
 
     }
 
@@ -63,7 +81,7 @@ public class Grade {
     @Override
     public String toString() {
 
-        return gradeValue + " " + correspondingDiscipline + "\n";
+        return gradeValue + " " + correspondingDisciplineID + "\n";
     }
 
 }

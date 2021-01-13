@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 
 import com.example.paul.studentbookandmore.R;
 import com.example.paul.studentbookandmore.business_logic.GradesManager;
@@ -42,9 +43,9 @@ public class FoldingCellListAdapter extends ArrayAdapter<Discipline> {
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         // get item for selected view
-        Discipline discipline = getItem(position);
+
         // if cell is exists - reuse it, if not - create the new one from resource
         FoldingCell cell = (FoldingCell) convertView;
         final ViewHolder viewHolder;
@@ -73,51 +74,61 @@ public class FoldingCellListAdapter extends ArrayAdapter<Discipline> {
 
         // bind data from selected element to view through view holder
 
-        assert discipline != null;
-        viewHolder.disciplineName.setText(discipline.getName());
 
-        int thesisValue = 0;
-        StringBuilder disciplineGrades = new StringBuilder();
-        disciplineGrades.append(" ");
-        int i = 0;
-        for(Grade grade : GradesManager.getInstance(application).getAllGradesForDiscipline(discipline)) {
-            if(grade.isThesis()){
-                thesisValue = grade.getGradeValue();
-            } else {
-                if (i == 0) {
-                    disciplineGrades.append(grade.getGradeValue());
-                    i++;
-                } else {
-                    disciplineGrades.append("," + " ").append(grade.getGradeValue());
+        final Discipline discipline = getItem(position);
+
+        GradesManager.getInstance(application).getAllGradesForDiscipline(discipline).observeForever(new Observer<List<Grade>>() {
+            @Override
+            public void onChanged(List<Grade> grades) {
+
+                assert discipline != null;
+                viewHolder.disciplineName.setText(discipline.getName());
+                int thesisValue = 0;
+                StringBuilder disciplineGrades = new StringBuilder();
+                disciplineGrades.append(" ");
+                int i = 0;
+                for(Grade grade : grades) {
+                    if(grade.isThesis()){
+                        thesisValue = grade.getGradeValue();
+                    } else {
+                        if (i == 0) {
+                            disciplineGrades.append(grade.getGradeValue());
+                            i++;
+                        } else {
+                            disciplineGrades.append("," + " ").append(grade.getGradeValue());
+                        }
+                    }
                 }
+
+                //check if we have a thesis
+                if(thesisValue != 0){
+                    viewHolder.teza.setText(Integer.toString(thesisValue));
+                } else{
+                    viewHolder.tezaDetails.setVisibility(View.GONE);
+                }
+
+                viewHolder.disciplineGrades.setText(disciplineGrades);
+
+                viewHolder.discipline.setText(discipline.getName());
+
+                String average = GradesManager.getInstance(application).getGradesAverageForDiscipline(discipline).toString();
+                if (Float.parseFloat(average) > 0) {
+                    viewHolder.average.setText(average);
+                }
+                else{
+                    viewHolder.average.setText("-");
+                }
+                //viewHolder.notifyAll();
             }
-        }
+        });
 
-        //check if we have a thesis
-        if(thesisValue != 0){
-            viewHolder.teza.setText(Integer.toString(thesisValue));
-        } else{
-            viewHolder.tezaDetails.setVisibility(View.GONE);
-        }
-
-        viewHolder.disciplineGrades.setText(disciplineGrades);
-
-        viewHolder.discipline.setText(discipline.getName());
-
-        String average = GradesManager.getInstance(application).getGradesAverageForDiscipline(discipline).toString();
-        if (Float.parseFloat(average) > 0) {
-            viewHolder.average.setText(average);
-        }
-        else{
-            viewHolder.average.setText("-");
-        }
 
 //        // set custom btn handler for list item from that item
 //        if (discipline.getRequestBtnClickListener() != null) {
 //            viewHolder.addGradeButton.setOnClickListener(discipline.getRequestBtnClickListener());
 //        } else {
             // (optionally) add "default" handler if no handler found in item
-            viewHolder.addGradeButton.setOnClickListener(defaultRequestBtnClickListener);
+        viewHolder.addGradeButton.setOnClickListener(defaultRequestBtnClickListener);
 
         viewHolder.addGradeButton.setOnClickListener(new View.OnClickListener() {
             @Override

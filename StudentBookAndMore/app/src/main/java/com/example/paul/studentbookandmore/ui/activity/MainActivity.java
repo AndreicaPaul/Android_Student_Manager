@@ -15,8 +15,6 @@ import com.example.paul.studentbookandmore.ui.activity.save.SaveDisciplineView;
 import com.example.paul.studentbookandmore.ui.adapter.ViewPagerAdapter;
 import com.example.paul.studentbookandmore.ui.helper.SlidingTabLayout;
 
-import io.realm.Realm;
-
 //import android.support.annotation.NonNull;
 //import android.support.design.widget.BottomNavigationView;
 //import android.support.v4.app.FragmentActivity;
@@ -38,10 +36,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Initializing falalalala database
-        Realm.init(this);
-//        Discipline discipline = new Discipline("Română");
-//        DisciplinesManager.getInstance().addDiscipline(discipline);
 
         // Creating The Toolbar and setting it as the Toolbar for the activity
 

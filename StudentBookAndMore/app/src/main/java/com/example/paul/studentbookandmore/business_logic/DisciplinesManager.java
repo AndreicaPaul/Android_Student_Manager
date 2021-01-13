@@ -17,13 +17,9 @@ import java.util.List;
 
 public class DisciplinesManager {
     private final DisciplineDao mDisciplineDao;
-    private LiveData<List<Discipline>> disciplines;
-    private Context context;
-//    private static String TAG = "DisciplinesManager";
+    private final LiveData<List<Discipline>> disciplines;
+    private final Context context;
     private static DisciplinesManager instance = null;
-//    private static String disciplineFileSavePath = Environment.getExternalStorageDirectory().getPath();
-//    private static String folderName = "StudentBookAndMore";
-//    private static String disciplineFileSaveName = "Disciplines_File.txt";
 
     private DisciplinesManager(Context application) {
         AppDatabase db = AppDatabase.getDatabase(application);
@@ -50,7 +46,7 @@ public class DisciplinesManager {
 
     public void deleteDiscipline(Discipline disciplineName){
         new deleteAsyncTask(mDisciplineDao).execute(disciplineName);
-        GradesManager.getInstance(context).removeAllGradesForDiscipline(disciplineName);
+        //GradesManager.getInstance(context).removeAllGradesForDiscipline(disciplineName);
     }
     public LiveData<List<Discipline>> getDisciplineForName(String disciplineName){
         return  mDisciplineDao.findDiscipline(disciplineName);

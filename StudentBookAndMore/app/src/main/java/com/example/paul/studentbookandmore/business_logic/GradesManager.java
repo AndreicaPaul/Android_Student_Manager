@@ -2,22 +2,17 @@ package com.example.paul.studentbookandmore.business_logic;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Environment;
-import android.util.Log;
+import android.os.AsyncTask;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.paul.studentbookandmore.model.DAO.GradeDao;
 import com.example.paul.studentbookandmore.model.Discipline;
 import com.example.paul.studentbookandmore.model.Grade;
+import com.example.paul.studentbookandmore.model.database.AppDatabase;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,18 +20,17 @@ import java.util.List;
  */
 
 public class GradesManager {
-    private static String TAG = "GradesManager";
-    private Context context;
-    private ArrayList<Grade> grades = new ArrayList<>();
+    private final GradeDao mGradeDao;
+    private final LiveData<List<Grade>> grades;
+    private final Context context;
     private static GradesManager instance = null;
-    private static String disciplineFileSavePath = Environment.getExternalStorageDirectory().getPath();
-    private static String folderName = "StudentBookAndMore";
-    private static String gradeFileSaveName = "Grades_File.txt";
-    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-    protected GradesManager(Context application) {
+    private GradesManager(Context application) {
         //Defeat instantiation
-        this.loadGradesFromFile();
+        AppDatabase db = AppDatabase.getDatabase(application);
+        mGradeDao = db.gradeDao();
+        grades = mGradeDao.getAllGrades();
         this.context = application;
     }
     public static GradesManager getInstance(Context context) {
@@ -46,49 +40,6 @@ public class GradesManager {
         return instance;
     }
 
-    private void loadGradesFromFile(){
-        try {
-            File file = new File(disciplineFileSavePath + File.separator + folderName, gradeFileSaveName);
-            FileReader fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            String line = bufferedReader.readLine();
-            while (line != null && line.length() > 0) {
-                String[] lineComponents = line.split(";");
-                Integer gradeValue = Integer.parseInt(lineComponents[0]);
-                Discipline discipline = new Discipline(lineComponents[1]);
-                boolean isThesis = Boolean.parseBoolean(lineComponents[2]);
-                Grade grade = new Grade(gradeValue,discipline,isThesis);
-
-                this.grades.add(grade);
-                line = bufferedReader.readLine();
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "loadGradesFromFile: something went wrong", e);
-        }
-    }
-
-    private void saveToFile(){
-
-        try {
-            File folder = new File(disciplineFileSavePath,folderName);
-            if(!folder.exists()){
-                folder.mkdirs();
-            }
-            File file = new File(folder, gradeFileSaveName);
-            FileOutputStream fileOutput = new FileOutputStream(file);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutput);
-
-            for(Grade grade : this.grades) {
-                outputStreamWriter.append(grade.toFileSave());
-            }
-            outputStreamWriter.close();
-            fileOutput.close();
-        } catch (IOException e) {
-            Log.e(TAG, "saveToFile: something went wrong", e);
-        }
-
-    }
 
     public void addGrade(int value, String disciplineName, boolean isThesis, Application application){
         final Grade grade = new Grade();
@@ -98,36 +49,54 @@ public class GradesManager {
             @Override
             public void onChanged(List<Discipline> disciplines) {
                 if(!disciplines.isEmpty())
-                    grade.setCorrespondingDiscipline(disciplines.get(0));
+                    grade.setCorrespondingDisciplineID(disciplines.get(0).getId());
+                    new insertAsyncTask(mGradeDao).execute(grade);
             }
         });
-        this.grades.add(grade);
-        this.saveToFile();
     }
 
-    public ArrayList<Grade> getGrades(){
+    private static class insertAsyncTask extends AsyncTask<Grade, Void, Void>{
+        private final GradeDao mAsyncDao;
+        insertAsyncTask(GradeDao dao){mAsyncDao = dao;}
+
+        @Override
+        protected Void doInBackground(final Grade... params){
+            mAsyncDao.insert(params[0]);
+            return null;
+        }
+    }
+
+    public LiveData<List<Grade>> getGrades(){
         return this.grades;
     }
 
-    public Float getGradesAverageForDiscipline(Discipline discipline){
-        int sum = 0;
-        int thesis = 0;
-        int counter = 0;
-        for(Grade grade : this.grades){
-            if(grade.getCorrespondingDiscipline().equals(discipline)){
-                if(grade.isThesis()){
-                    thesis = grade.getGradeValue();
+    public Float getGradesAverageForDiscipline(final Discipline discipline){
+        final Float[] average = new Float[1];
+        average[0] = Float.NaN;
+        grades.observeForever(new Observer<List<Grade>>() {
+            @Override
+            public void onChanged(List<Grade> grades) {
+                int sum = 0;
+                int thesis = 0;
+                int counter = 0;
+                for(Grade grade : grades){
+                    if(grade.getCorrespondingDisciplineID() == discipline.getId()){
+                        if(grade.isThesis()){
+                            thesis = grade.getGradeValue();
+                        } else {
+                            sum += grade.getGradeValue();
+                            counter++;
+                        }
+                    }
+                }
+                if(thesis != 0){
+                    average[0] = Float.valueOf(decimalFormat.format(((sum/ (float) counter)*3+thesis)/4));
                 } else {
-                    sum += grade.getGradeValue();
-                    counter++;
+                    average[0] = Float.valueOf(decimalFormat.format(sum / (float) counter));
                 }
             }
-        }
-        if(thesis != 0){
-            return Float.valueOf(decimalFormat.format(((sum/Float.valueOf(counter))*3+thesis)/4));
-        } else {
-            return Float.valueOf(decimalFormat.format(sum / Float.valueOf(counter)));
-        }
+        });
+       return average[0];
     }
 
     public String getGeneralAverage(){
@@ -143,42 +112,29 @@ public class GradesManager {
                 }
             }
             if (counter>0)
-            return Float.valueOf(decimalFormat.format(sum / Float.valueOf(counter))).toString();
+            return Float.valueOf(decimalFormat.format(sum / (float) counter)).toString();
         }
-        return "No grades yet.";
+        return "Insuficiente note.";
     }
 
-    public ArrayList<Grade> getAllGradesForDiscipline(Discipline discipline){
-        ArrayList<Grade> grades1 = new ArrayList<>();
-        for(Grade grade : this.grades){
-            if(grade.getCorrespondingDiscipline().equals(discipline)){
-                grades1.add(grade);
-            }
-        }
-        return grades1;
+    public LiveData<List<Grade>> getAllGradesForDiscipline(Discipline discipline){
+       return mGradeDao.getGradesForDiscipline(discipline.getId());
     }
 
-    public void deleteGrade(int value, String corespondingDiscipline){
-        Grade gradeToDelete = null;
-        for(Grade grade : this.getGrades()){
-            if(grade.getGradeValue() == value && grade.getCorrespondingDiscipline().getName().equals(corespondingDiscipline)){
-                gradeToDelete = grade;
-            }
-        }
-        this.grades.remove(gradeToDelete);
-        this.saveToFile();
+    public void deleteGrade(Grade grade){
+        new deleteAsyncTask(mGradeDao).execute(grade);
     }
 
-    void removeAllGradesForDiscipline(Discipline discipline){
-        ArrayList<Grade> gradesToDelete = new ArrayList<Grade>();
-        for(Grade grade : this.getGrades()){
-            if(grade.getCorrespondingDiscipline().getName().equals(discipline.getName())){
-                gradesToDelete.add(grade);
-            }
+    private static class deleteAsyncTask extends AsyncTask<Grade, Void, Void>{
+        private GradeDao mAsyncDao;
+        deleteAsyncTask(GradeDao dao){
+            mAsyncDao = dao;
         }
-        if(gradesToDelete != null) {
-            this.grades.removeAll(gradesToDelete);
-            this.saveToFile();
+        @Override
+        protected Void doInBackground(final Grade... params){
+            mAsyncDao.deleteGrade(params);
+            return null;
         }
     }
+
 }

@@ -1,6 +1,5 @@
 package com.example.paul.studentbookandmore.model;
 
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -16,7 +15,6 @@ public class Discipline  implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @ColumnInfo(name = "name")
     private String name;
 
     public Discipline() {

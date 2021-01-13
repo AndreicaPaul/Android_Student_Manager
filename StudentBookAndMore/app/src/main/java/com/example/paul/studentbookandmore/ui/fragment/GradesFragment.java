@@ -13,11 +13,15 @@ import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.paul.studentbookandmore.R;
 import com.example.paul.studentbookandmore.business_logic.GradesManager;
 import com.example.paul.studentbookandmore.model.Grade;
+
+import java.util.List;
 
 /**
  * Created by Paul on 21-Apr-17.
@@ -26,16 +30,26 @@ import com.example.paul.studentbookandmore.model.Grade;
 public class GradesFragment extends Fragment {
 
     ListView listView;
+    ArrayAdapter<Grade> adapter;
     private SwipeRefreshLayout swipeContainer;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.grades_fragment, container, false);
+        View view = inflater.inflate(R.layout.excalibur, container, false);
 
 
         listView = (ListView) view.findViewById(R.id.list_view_grades_fragment);
-        final ArrayAdapter<Grade> adapter = new ArrayAdapter<Grade>(GradesFragment.this.getContext(), android.R.layout.simple_list_item_1, GradesManager.getInstance(getContext()).getGrades());
+        LiveData<List<Grade>> grades = GradesManager.getInstance(getContext()).getGrades();
+
+        grades.observe(this,new Observer<List<Grade>>() {
+            @Override
+            public void onChanged(List<Grade> grades) {
+                adapter = new ArrayAdapter<Grade>(getActivity(), R.layout.list_view_row_item,grades);
+                adapter.notifyDataSetChanged();
+                listView.setAdapter(adapter);
+            }
+        });
         listView.setAdapter(adapter);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -51,7 +65,7 @@ public class GradesFragment extends Fragment {
                         .setMessage("Sunteți sigur că vreți să ștergeți nota?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                GradesManager.getInstance(getContext()).deleteGrade(grade.getGradeValue(),grade.getCorrespondingDiscipline().getName());
+                                GradesManager.getInstance(getContext()).deleteGrade(grade);
 //                                dialog.dismiss();
                             }
                         })

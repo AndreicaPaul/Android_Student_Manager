@@ -7,11 +7,14 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.paul.studentbookandmore.model.DAO.DisciplineDao;
+import com.example.paul.studentbookandmore.model.DAO.GradeDao;
 import com.example.paul.studentbookandmore.model.Discipline;
+import com.example.paul.studentbookandmore.model.Grade;
 
-@Database(entities = {Discipline.class}, version = 1, exportSchema = false)
+@Database(entities = {Discipline.class, Grade.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract DisciplineDao disciplineDao();
+    public abstract GradeDao gradeDao();
     private static AppDatabase instance;
 
     public static AppDatabase getDatabase(final Context context){

@@ -37,7 +37,6 @@ public class DeleteChangeGradeDialogView extends Dialog{
 
             }
         });
-
         dialog.show();
     }
 

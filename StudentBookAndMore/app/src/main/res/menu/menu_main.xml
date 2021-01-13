@@ -4,6 +4,7 @@
     tools:context="com.example.paul.studentbookandmore.ui.AndroidWithSwipeView">
     <item
         android:id="@+id/action_settings"
+        android:visible="false"
         android:orderInCategory="1"
         android:title="@string/action_settings"
         app:showAsAction="never"
@@ -20,6 +21,7 @@
         android:onClick="deleteDiscipline"
         />
     <item android:id="@+id/add_teza"
+        android:visible="false"
         android:orderInCategory="3"
         android:title="Adaugă o teză"
         android:onClick="addTeza"
