@@ -8,6 +8,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.paul.studentbookandmore.R;
@@ -18,7 +20,7 @@ import com.ramotion.foldingcell.FoldingCell;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Paul on 21-Apr-17.
@@ -36,12 +38,18 @@ public class DisciplinesFragment extends Fragment {
 
 
         listView = (ListView) view.findViewById(R.id.list_view);
-        final ArrayList<Discipline> disciplines = DisciplinesManager.getInstance().getDisciplines();
+        LiveData<List<Discipline>> disciplines = DisciplinesManager.getInstance(getContext()).getDisciplines();
 
         // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
-        adapter = new FoldingCellListAdapter(this.getActivity(), disciplines);
-
-        listView.setAdapter(adapter);
+        //adapter = new FoldingCellListAdapter(this.getActivity(), disciplines);
+        disciplines.observe(this, new Observer<List<Discipline>>() {
+            @Override
+            public void onChanged(List<Discipline> disciplines) {
+                adapter = new FoldingCellListAdapter(getActivity(),disciplines);
+                adapter.notifyDataSetChanged();
+                listView.setAdapter(adapter);
+            }
+        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {

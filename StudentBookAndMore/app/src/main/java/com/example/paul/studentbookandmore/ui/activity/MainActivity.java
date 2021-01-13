@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager pager;
     ViewPagerAdapter adapter;
     SlidingTabLayout tabs;
-    CharSequence Titles[]={"General","Discipline","Absențe"};
+    CharSequence[] Titles ={"General","Discipline","Note"};
     int Numboftabs = 3;
     int bottomNavigationId = 0;
 

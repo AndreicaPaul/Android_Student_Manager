@@ -5,6 +5,10 @@ public class Grade {
     private Discipline correspondingDiscipline;
     private boolean isThesis;
 
+    public Grade() {
+
+    }
+
     public boolean isThesis() {
         return isThesis;
     }

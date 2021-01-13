@@ -3,11 +3,13 @@ package com.example.paul.studentbookandmore.ui.activity.delete;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.paul.studentbookandmore.R;
 import com.example.paul.studentbookandmore.business_logic.DisciplinesManager;
 import com.example.paul.studentbookandmore.model.Discipline;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Paul on 15-Sep-17 at 4:53 PM.
@@ -26,14 +28,14 @@ public class SelectDisciplineToDeletePresenterImpl implements SelectDisciplineTo
 
     @Override
     public void setListItems() {
-        ArrayList<Discipline> disciplines = DisciplinesManager.getInstance().getDisciplines();
-        ArrayAdapter<Discipline> arrayAdapter = new ArrayAdapter<Discipline>(mView,android.R.layout.simple_list_item_1,disciplines);
+        LiveData<List<Discipline>> disciplines = DisciplinesManager.getInstance(mView.getApplication()).getDisciplines();
+        ArrayAdapter<Discipline> arrayAdapter = new ArrayAdapter<Discipline>(mView,android.R.layout.simple_list_item_1,disciplines.getValue());
         listView.setAdapter(arrayAdapter);
     }
 
     @Override
     public void ListItemSelected(int position) {
         Discipline discipline = (Discipline) listView.getItemAtPosition(position);
-        DisciplinesManager.getInstance().deleteDiscipline(discipline);
+        DisciplinesManager.getInstance(mView.getApplication()).deleteDiscipline(discipline);
     }
 }

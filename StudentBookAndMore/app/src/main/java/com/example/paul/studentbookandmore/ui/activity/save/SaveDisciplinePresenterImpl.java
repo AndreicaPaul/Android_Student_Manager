@@ -1,5 +1,6 @@
 package com.example.paul.studentbookandmore.ui.activity.save;
 
+import android.app.Application;
 import android.widget.EditText;
 
 import com.example.paul.studentbookandmore.R;
@@ -18,10 +19,10 @@ public class SaveDisciplinePresenterImpl implements SaveDisciplinePresenter {
     }
 
     @Override
-    public void addDiscipline() {
+    public void addDiscipline(Application application) {
         EditText name = (EditText) view.findViewById(R.id.discipline_name);
         Discipline discipline = new Discipline(name.getText().toString());
-        DisciplinesManager.getInstance().addDiscipline(discipline);
+        DisciplinesManager.getInstance(application).addDiscipline(discipline);
     }
 
 }

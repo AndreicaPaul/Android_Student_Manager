@@ -1,9 +1,15 @@
 package com.example.paul.studentbookandmore.business_logic;
 
+import android.app.Application;
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+
+import androidx.lifecycle.Observer;
+
 import com.example.paul.studentbookandmore.model.Discipline;
 import com.example.paul.studentbookandmore.model.Grade;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Paul on 14-Mar-17.
@@ -19,6 +26,7 @@ import java.util.ArrayList;
 
 public class GradesManager {
     private static String TAG = "GradesManager";
+    private Context context;
     private ArrayList<Grade> grades = new ArrayList<>();
     private static GradesManager instance = null;
     private static String disciplineFileSavePath = Environment.getExternalStorageDirectory().getPath();
@@ -26,13 +34,14 @@ public class GradesManager {
     private static String gradeFileSaveName = "Grades_File.txt";
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-    protected GradesManager() {
+    protected GradesManager(Context application) {
         //Defeat instantiation
         this.loadGradesFromFile();
+        this.context = application;
     }
-    public static GradesManager getInstance() {
+    public static GradesManager getInstance(Context context) {
         if(instance == null) {
-            instance = new GradesManager();
+            instance = new GradesManager(context);
         }
         return instance;
     }
@@ -81,7 +90,17 @@ public class GradesManager {
 
     }
 
-    public void addGrade(Grade grade){
+    public void addGrade(int value, String disciplineName, boolean isThesis, Application application){
+        final Grade grade = new Grade();
+        grade.setGradeValue(value);
+        grade.setThesis(isThesis);
+        DisciplinesManager.getInstance(application).getDisciplineForName(disciplineName).observeForever(new Observer<List<Discipline>>() {
+            @Override
+            public void onChanged(List<Discipline> disciplines) {
+                if(!disciplines.isEmpty())
+                    grade.setCorrespondingDiscipline(disciplines.get(0));
+            }
+        });
         this.grades.add(grade);
         this.saveToFile();
     }
@@ -111,18 +130,22 @@ public class GradesManager {
         }
     }
 
-    public Float getGeneralAverage(){
+    public String getGeneralAverage(){
         int sum = 0;
         int counter = 0;
         Float currentGrade;
-        for(Discipline discipline : DisciplinesManager.getInstance().getDisciplines()){
-            currentGrade = this.getGradesAverageForDiscipline(discipline);
-            if(currentGrade > 0){
-                sum += Math.round(currentGrade);
-                counter++;
+        if(DisciplinesManager.getInstance(context).getDisciplines().getValue() != null) {
+            for (Discipline discipline : DisciplinesManager.getInstance(context).getDisciplines().getValue()) {
+                currentGrade = this.getGradesAverageForDiscipline(discipline);
+                if (currentGrade > 0) {
+                    sum += Math.round(currentGrade);
+                    counter++;
+                }
             }
+            if (counter>0)
+            return Float.valueOf(decimalFormat.format(sum / Float.valueOf(counter))).toString();
         }
-        return Float.valueOf(decimalFormat.format(sum / Float.valueOf(counter)));
+        return "No grades yet.";
     }
 
     public ArrayList<Grade> getAllGradesForDiscipline(Discipline discipline){

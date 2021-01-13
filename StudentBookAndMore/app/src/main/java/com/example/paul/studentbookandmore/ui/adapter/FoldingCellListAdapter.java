@@ -1,6 +1,7 @@
 package com.example.paul.studentbookandmore.ui.adapter;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.paul.studentbookandmore.R;
-import com.example.paul.studentbookandmore.business_logic.DisciplinesManager;
 import com.example.paul.studentbookandmore.business_logic.GradesManager;
 import com.example.paul.studentbookandmore.model.Discipline;
 import com.example.paul.studentbookandmore.model.Grade;
@@ -31,10 +31,12 @@ public class FoldingCellListAdapter extends ArrayAdapter<Discipline> {
     private HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View.OnClickListener defaultRequestBtnClickListener;
     private Context mContext;
+    private Application application;
 
     public FoldingCellListAdapter(Context context, List<Discipline> objects) {
         super(context, 0, objects);
         this.mContext = context;
+        this.application = application;
     }
 
 
@@ -78,7 +80,7 @@ public class FoldingCellListAdapter extends ArrayAdapter<Discipline> {
         StringBuilder disciplineGrades = new StringBuilder();
         disciplineGrades.append(" ");
         int i = 0;
-        for(Grade grade : GradesManager.getInstance().getAllGradesForDiscipline(discipline)) {
+        for(Grade grade : GradesManager.getInstance(application).getAllGradesForDiscipline(discipline)) {
             if(grade.isThesis()){
                 thesisValue = grade.getGradeValue();
             } else {
@@ -102,7 +104,7 @@ public class FoldingCellListAdapter extends ArrayAdapter<Discipline> {
 
         viewHolder.discipline.setText(discipline.getName());
 
-        String average = GradesManager.getInstance().getGradesAverageForDiscipline(discipline).toString();
+        String average = GradesManager.getInstance(application).getGradesAverageForDiscipline(discipline).toString();
         if (Float.parseFloat(average) > 0) {
             viewHolder.average.setText(average);
         }
@@ -121,7 +123,7 @@ public class FoldingCellListAdapter extends ArrayAdapter<Discipline> {
             @Override
             public void onClick(View v) {
                 CustomDialogView customDialogView = new CustomDialogView(getContext(),false);
-                customDialogView.showDialog((Activity) mContext, DisciplinesManager.getInstance().getDisciplineForName(viewHolder.discipline.getText().toString()));
+                customDialogView.showDialog((Activity) mContext, viewHolder.discipline.getText().toString());
             }
         });
 

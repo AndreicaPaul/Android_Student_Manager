@@ -12,8 +12,6 @@ import android.widget.NumberPicker;
 import androidx.annotation.NonNull;
 
 import com.example.paul.studentbookandmore.R;
-import com.example.paul.studentbookandmore.model.Discipline;
-import com.example.paul.studentbookandmore.model.Grade;
 
 /**
  * Created by Paul on 05-Jun-17.
@@ -32,7 +30,7 @@ public class CustomDialogView extends Dialog{
         mCustomDialogImpl = new CustomDialogImpl(this);
     }
 
-    public void showDialog(Activity activity, final Discipline discipline){
+    public void showDialog(final Activity activity, final String disciplineName){
 
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -47,11 +45,7 @@ public class CustomDialogView extends Dialog{
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Grade grade = new Grade(spinner.getValue(),discipline, false);
-                if(checkBox.isChecked()) {
-                    grade.setThesis(true);
-                }
-                mCustomDialogImpl.addGradeForDiscipline(grade);
+                mCustomDialogImpl.addGradeForDiscipline(spinner.getValue(),disciplineName,checkBox.isChecked(), activity.getApplication());
                 dialog.dismiss();
             }
         });

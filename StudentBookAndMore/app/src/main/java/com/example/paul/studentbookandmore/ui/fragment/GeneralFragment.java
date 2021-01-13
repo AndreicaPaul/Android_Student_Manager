@@ -23,7 +23,7 @@ public class GeneralFragment extends Fragment {
         View view = inflater.inflate(R.layout.general_fragment, container, false);
         generalAvereage = (TextView) view.findViewById(R.id.general_average);
 
-        generalAvereage.setText("Media generală este:" + "\n" + GradesManager.getInstance().getGeneralAverage().toString());
+        generalAvereage.setText("Media generală este:" + "\n" + GradesManager.getInstance(getContext()).getGeneralAverage().toString());
         generalAvereage.setTextColor(ContextCompat.getColor(getContext(),R.color.colorPrimary));
         generalAvereage.setTextSize(50);
         return view;

@@ -35,7 +35,7 @@ public class GradesFragment extends Fragment {
 
 
         listView = (ListView) view.findViewById(R.id.list_view_grades_fragment);
-        final ArrayAdapter<Grade> adapter = new ArrayAdapter<Grade>(GradesFragment.this.getContext(), android.R.layout.simple_list_item_1, GradesManager.getInstance().getGrades());
+        final ArrayAdapter<Grade> adapter = new ArrayAdapter<Grade>(GradesFragment.this.getContext(), android.R.layout.simple_list_item_1, GradesManager.getInstance(getContext()).getGrades());
         listView.setAdapter(adapter);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -51,7 +51,7 @@ public class GradesFragment extends Fragment {
                         .setMessage("Sunteți sigur că vreți să ștergeți nota?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                GradesManager.getInstance().deleteGrade(grade.getGradeValue(),grade.getCorrespondingDiscipline().getName());
+                                GradesManager.getInstance(getContext()).deleteGrade(grade.getGradeValue(),grade.getCorrespondingDiscipline().getName());
 //                                dialog.dismiss();
                             }
                         })

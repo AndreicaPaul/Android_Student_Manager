@@ -1,20 +1,22 @@
 package com.example.paul.studentbookandmore.model;
 
-import com.example.paul.studentbookandmore.business_logic.GradesManager;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import java.util.Objects;
 
 /**
  * Created by Paul on 10-Mar-17.
  */
+@Entity
+public class Discipline  implements Serializable {
 
-public class Discipline extends RealmObject implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
 
-    @PrimaryKey
-    private String id;
+    @ColumnInfo(name = "name")
     private String name;
 
     public Discipline() {
@@ -22,8 +24,14 @@ public class Discipline extends RealmObject implements Serializable {
 
     public Discipline(String name) {
         this.name = name;
+    }
 
-        //this.details = details;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -41,10 +49,10 @@ public class Discipline extends RealmObject implements Serializable {
         return name;
 
     }
-
-    public String toNormalString(){
-        return this.name + " " + GradesManager.getInstance().getGradesAverageForDiscipline(this);
-    }
+//
+//    public String toNormalString(){
+//        return this.name + " " + GradesManager.getInstance().getGradesAverageForDiscipline(this);
+//    }
 
     public String toFileSave(){
         return name + ";" + "\n";
@@ -57,7 +65,7 @@ public class Discipline extends RealmObject implements Serializable {
 
         Discipline that = (Discipline) o;
 
-        return name != null ? name.equals(that.name) : that.name == null;
+        return Objects.equals(name, that.name);
 
     }
 

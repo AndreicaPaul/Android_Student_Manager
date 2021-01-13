@@ -18,7 +18,7 @@ public class SaveDisciplineView extends AppCompatActivity {
     }
 
     public void addDiscipline(View view){
-        this.saveDisciplinePresenter.addDiscipline();
+        this.saveDisciplinePresenter.addDiscipline(getApplication());
         finish();
     }
 }
